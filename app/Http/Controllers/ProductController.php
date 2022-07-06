@@ -53,7 +53,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductPostRequest $request, Product $product)
+    public function store(ProductPostRequest $request)
     {
         $request->validated();
         $input = $request->all();  

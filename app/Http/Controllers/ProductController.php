@@ -1,6 +1,6 @@
 <?php 
 namespace App\Http\Controllers;  
-
+use App\Http\Requests\ProductPostRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -40,9 +40,11 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     
-    public function create()
+    public function create(Product $product)
     {
-        return view('products.create');
+        if ($this->authorize('create', $product)) {
+            return view('products.create');
+        }
     }
    
     /**
@@ -51,15 +53,9 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductPostRequest $request, Product $product)
     {
-        $request->validate([
-            'name' => 'required',
-            'detail' => 'required',
-            'price'=>'required',
-            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-        ]); 
-
+        $request->validated();
         $input = $request->all();  
         $input['user_id'] = Auth::id();
         if ($image = $request->file('image')) {
@@ -96,12 +92,8 @@ class ProductController extends Controller
     {
         $user = Auth::user();
         if ($this->authorize('update', $product) && $user->can('update', $product)) {
-            dd('user can update product');
-        }else {
-            dd('user can not update product');
+            return view('products.edit',compact('product'));
         }
-
-        return view('products.edit',compact('product'));
     }  
 
     /**

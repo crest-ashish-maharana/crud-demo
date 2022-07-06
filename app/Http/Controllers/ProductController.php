@@ -1,6 +1,7 @@
 <?php 
 namespace App\Http\Controllers;  
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use Illuminate\Http\Request;
     
@@ -52,17 +53,15 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required',
             'detail' => 'required',
             'price'=>'required',
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            
         ]); 
 
         $input = $request->all();  
-
+        $input['user_id'] = Auth::id();
         if ($image = $request->file('image')) {
             $destinationPath = 'image/';
             $productImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
@@ -95,6 +94,13 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        $user = Auth::user();
+        if ($this->authorize('update', $product) && $user->can('update', $product)) {
+            dd('user can update product');
+        }else {
+            dd('user can not update product');
+        }
+
         return view('products.edit',compact('product'));
     }  
 

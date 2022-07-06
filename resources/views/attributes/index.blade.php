@@ -4,12 +4,12 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Products</h2>
+                <h2>Attributes</h2>
             </div>
 
             <div class="pull-right mb-3">
                 @can('product-create')
-                <a class="btn btn-success" href="{{ route('products.create') }}"> Create </a>
+                <a class="btn btn-success" href="{{ route('attributes.create') }}"> Create  Attribute</a>
                 @endcan
             </div>
         </div>
@@ -25,29 +25,23 @@
 
     <table class="table table-bordered">
         <tr>
-            <th>No</th>            
-            <th>Images</th>
+            <th>No</th>      
             <th>Name</th>
-            <th>Details</th>
-            <th>Price</th>
             <th width="280px">Action</th>
         </tr>
 
-	    @foreach ($products as $product)
+	    @foreach ($attributes as $key => $attribute)
 	    <tr>
 	        <td>{{ ++$i }}</td>
-            <td><img src="/image/{{ $product->image }}" width="100px"></td>
-	        <td>{{ $product->name }}</td>
-	        <td>{{ $product->detail }}</td>
-            <td>{{ $product->price }}</td>
+	        <td>{{ $attribute->name }}</td>
 	        <td>            
-                <a class="btn btn-info" href="{{ route('products.show',$product->id) }}">Show</a>
+                <a class="btn btn-info" href="{{ route('attributes.show',$attribute->id) }}">Show</a>
                 @can('product-edit')
-                <a class="btn btn-primary" href="{{ route('products.edit',$product->id) }}">Edit</a>
+                <a class="btn btn-primary" href="{{ route('attributes.edit',$attribute->id) }}">Edit</a>
                 @endcan                
                 
                 @can('product-delete')
-                    {!! Form::open(['method' => 'DELETE','route' => ['products.destroy', $product->id],'style'=>'display:inline']) !!}
+                    {!! Form::open(['method' => 'DELETE','route' => ['attributes.destroy', $attribute->id],'style'=>'display:inline']) !!}
                         {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                     {!! Form::close() !!}
                 @endcan            
@@ -56,7 +50,7 @@
 	    @endforeach
     </table>
 
-    {!! $products->links() !!}
+    {!! $attributes->links() !!}
 
 
     <p class="text-center text-primary"><small>by Ashish Maharana</small></p>

@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductPostRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\Attribute;
 use Illuminate\Http\Request;
     
 
@@ -43,7 +44,8 @@ class ProductController extends Controller
     public function create(Product $product)
     {
         if ($this->authorize('create', $product)) {
-            return view('products.create');
+            $attributes = Attribute::all(); 
+            return view('products.create', compact('attributes'));
         }
     }
    

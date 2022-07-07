@@ -13,4 +13,8 @@ class Product extends Model
         'user_id', 'name', 'detail', 'image', 'price'
     ];
 
+    public function attributeValues()
+    {
+        return $this->hasMany(AttributeValue::class)->with('attributes');
+    }
 }

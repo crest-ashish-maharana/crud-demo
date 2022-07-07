@@ -22,13 +22,15 @@
         </div>
     @endif
 
-
+    {{-- @dd($products[1]->attributeValues) --}}
     <table class="table table-bordered">
         <tr>
             <th>No</th>            
             <th>Images</th>
             <th>Name</th>
             <th>Details</th>
+            <th>Color</th>
+            <th>Size</th>
             <th>Price</th>
             <th width="280px">Action</th>
         </tr>
@@ -39,6 +41,28 @@
             <td><img src="/image/{{ $product->image }}" width="100px"></td>
 	        <td>{{ $product->name }}</td>
 	        <td>{{ $product->detail }}</td>
+            <td>
+                @if ($product->attributeValues->isEmpty())
+                    N/A
+                @else
+                    @foreach ($product->attributeValues as $attribute) 
+                        @if($attribute->attributes->name === 'Color')
+                            {{ $attribute->value }}
+                        @endif
+                    @endforeach
+                @endif
+            </td>
+            <td>
+                @if ($product->attributeValues->isEmpty())
+                    N/A
+                @else
+                    @foreach ($product->attributeValues as $attribute) 
+                        @if($attribute->attributes->name === 'Size')
+                            {{ $attribute->value }}
+                        @endif
+                    @endforeach
+                @endif
+            </td>
             <td>{{ $product->price }}</td>
 	        <td>            
                 <a class="btn btn-info" href="{{ route('products.show',$product->id) }}">Show</a>

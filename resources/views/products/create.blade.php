@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Add </h2>
+                <h2>Add Product</h2>
             </div>
 
             <div class="pull-right">
@@ -30,69 +30,81 @@
     {!! Form::open(array('route' => 'products.store','method'=>'POST', 'enctype'=>'multipart/form-data')) !!}
     
          <div class="row">
-		    <div class="col-xs-12 col-sm-12 col-md-12">
+		    <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
 		        <div class="form-group">
 		            <strong>Name:</strong>		            
                     {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
 		        </div>
 		    </div>
 
-		    <div class="col-xs-12 col-sm-12 col-md-12">
+		    <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
 		        <div class="form-group">
 		            <strong>Detail:</strong>
                     {!! Form::textarea('detail', null, array('placeholder' => 'Detail','class' => 'form-control')) !!}		            
 		        </div>
 		    </div>
 
-		    <div class="col-xs-12 col-sm-12 col-md-12">
+		    <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
 		        <div class="form-group">
 		            <strong>Price:</strong>
                     {!! Form::number('price', null, array('placeholder' => 'Price','class' => 'form-control')) !!}
 		        </div>
 		    </div>            
 
-            <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
                 <div class="form-group">
                     <strong>Product Image:</strong>
                     {!! Form::file('image', array('class' => 'form-control')) !!}                    
                 </div>
             </div>            
 
-            <div class="form-group row">
+            <div class="form-group mt-3">
                 <strong>Product Attribute:</strong>
-                <div class="col-xs-11 col-sm-11 col-md-11">
-                    <select name="attribute_name" id="attribute_name" class="form-control">
-                        <option selected="true" disabled="disabled">Select Attribute</option>
-                        @foreach ($attributes as $attribute)
-                            <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
-                        @endforeach
-                    </select>                   
-                </div>
-                <div class="col-xs-1 col-sm-1 col-md-1">
-                    <button type="button" class="btn btn-info text-white w-100" name="add_section" id="add_section">Add</button>
+                <div class="d-flex">
+                    @foreach ($attributes as $attribute)
+                        <input 
+                            class="form-check-input"
+                            type="checkbox" 
+                            name={{ strtolower($attribute->name) }} 
+                            value={{ $attribute->id }} 
+                            id={{ strtolower($attribute->name) }} 
+                            onclick="myFunction();"/> &nbsp;{{ $attribute->name }}&nbsp;&nbsp;&nbsp;&nbsp;
+                    @endforeach        
                 </div>
             </div>    
-
-            <div class="form-group row" id="color_section" style="display: none;">
-                <strong>Input Colors:</strong>
-                <div class="col-xs-11 col-sm-11 col-md-11">
-                    {!! Form::text('colors', null, array('placeholder' => 'Input colors comma-separated e.g. white, blue, purple','class' => 'form-control')) !!}                 
+            <div class="form-group row mt-3">
+                <div class="col-md-6">
+                    <div id="colorContainer" style="display: none;">
+                        <table class="table table-bordered" id="dynamicAddColor">
+                            <tr>
+                                <th>Color</th>
+                                <th>Action</th>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="colorFields[0]" placeholder="Enter Color" class="form-control" />
+                                </td>
+                                <td><button type="button" name="addColor" id="dynamic-color-ar" class="btn btn-outline-primary">Add Color</button></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div class="col-xs-1 col-sm-1 col-md-1">
-                    <button type="button" class="btn btn-danger text-white w-100" name="remove_color" id="remove_color">Remove</button>
+                <div class="col-md-6">
+                    <div id="sizeContainer" style="display: none;">
+                        <table class="table table-bordered" id="dynamicAddSize">
+                            <tr>
+                                <th>Size</th>
+                                <th>Action</th>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="sizeFields[0]" placeholder="Enter Size" class="form-control" />
+                                </td>
+                                <td><button type="button" name="addSize" id="dynamic-size-ar" class="btn btn-outline-primary">Add Size</button></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-            </div>   
-
-            <div class="form-group row" id="size_section" style="display: none;">
-                <strong>Input Size:</strong>
-                <div class="col-xs-11 col-sm-11 col-md-11">
-                    {!! Form::text('sizes', null, array('placeholder' => 'Input Size comma-separated e.g. S, M, L, XL','class' => 'form-control')) !!}                 
-                </div>
-                <div class="col-xs-1 col-sm-1 col-md-1">
-                    <button type="button" class="btn btn-danger text-white w-100" name="remove_size" id="remove_size">Remove</button>
-                </div>
-            </div> 
-
+            </div>
+            
 		    <div class="col-xs-12 col-sm-12 col-md-12 text-center mt-5">
 		        <button type="submit" class="btn btn-primary">Submit</button>
 		    </div>
@@ -102,32 +114,46 @@
 <p class="text-center text-primary"><small>by Ashish Maharana</small></p>
     
 <script>
-    $('document').ready(function () {
-        $("#add_section").click(function () {
-            var sel = document.getElementById("attribute_name");
-            var text= sel.options[sel.selectedIndex].text;
-            if(text == 'Color'){
-                $('#color_section').show();
-            }else if(text == 'Size'){
-                $('#size_section').show();
-            }
-        });
-
-        $("#remove_color").click(function () {
-            var sel = document.getElementById("attribute_name");
-            var text= sel.options[sel.selectedIndex].text;
-            if(text == 'Color'){
-                $('#color_section').hide();
-            }
-        });
-
-        $("#remove_size").click(function () {
-            var sel = document.getElementById("attribute_name");
-            var text= sel.options[sel.selectedIndex].text;
-            if(text == 'Color'){
-                $('#size_section').hide();
-            }
-        });
+    var i = 0;
+    var j = 0;
+    $("#dynamic-color-ar").click(function () {
+        ++i;
+        $("#dynamicAddColor").append('<tr><td><input type="text" name="colorFields[' + i +
+            ']" placeholder="Enter Color" class="form-control" /></td><td><button type="button" class="btn btn-outline-danger remove-color-input">Delete</button></td></tr>'
+            );
     });
+    $(document).on('click', '.remove-color-input', function () {
+        $(this).parents('tr').remove();
+    });
+
+    $("#dynamic-size-ar").click(function () {
+        ++j;
+        $("#dynamicAddSize").append('<tr><td><input type="text" name="sizeFields[' + j +
+            ']" placeholder="Enter Size" class="form-control" /></td><td><button type="button" class="btn btn-outline-danger remove-size-input">Delete</button></td></tr>'
+            );
+    });
+    $(document).on('click', '.remove-size-input', function () {
+        $(this).parents('tr').remove();
+    });
+
+
+    function myFunction() {
+        var colorBlock = document.getElementById('colorContainer');
+        var sizeBlock = document.getElementById('sizeContainer');
+        var colorElement = document.getElementById('color');
+        var sizeElement = document.getElementById('size');
+        
+        if(colorElement.name == 'color' && colorElement.checked == true){
+            colorBlock.style.display = "block";
+        }else {
+            colorBlock.style.display = "none";
+        }
+        
+        if(sizeElement.name == 'size' && sizeElement.checked == true){
+            sizeBlock.style.display = "block";
+        }else {
+            sizeBlock.style.display = "none";
+        }
+    }
 </script>
 @endsection

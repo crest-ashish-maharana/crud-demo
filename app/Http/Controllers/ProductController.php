@@ -4,6 +4,7 @@ use App\Http\Requests\ProductPostRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Attribute;
+use App\Models\AttributeValue;
 use Illuminate\Http\Request;
     
 
@@ -31,7 +32,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::latest()->paginate(5);
+        $products = Product::with('attributeValues')->latest()->paginate(5);
         return view('products.index',compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
     }   
 
@@ -60,14 +61,39 @@ class ProductController extends Controller
         $request->validated();
         $input = $request->all();  
         $input['user_id'] = Auth::id();
+        
         if ($image = $request->file('image')) {
             $destinationPath = 'image/';
             $productImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
             $image->move($destinationPath, $productImage);
             $input['image'] = "$productImage";
         } 
+        
+        $product = Product::create([
+            'user_id' => $input['user_id'],
+            'name' => $input['name'],
+            'detail' => $input['detail'],
+            'image' => $input['image'],
+            'price' => $input['price'],
+        ]);    
+        
+        if(isset($input['colorFields']) && !empty($input['colorFields'])){
+            $colorList = implode(', ', $input['colorFields']);
+            AttributeValue::create([
+                'attribute_id' => $input['color'],
+                'value' => $colorList,
+                'product_id' => $product->id
+            ]);
+        }
 
-        Product::create($input);        
+        if(isset($input['sizeFields']) && !empty($input['sizeFields'])){
+            $sizeList = implode(', ', $input['sizeFields']);
+            AttributeValue::create([
+                'attribute_id' => $input['size'],
+                'value' => $sizeList,
+                'product_id' => $product->id
+            ]);
+        }
 
         return redirect()->route('products.index')->with('success','Product created successfully.');
     }   

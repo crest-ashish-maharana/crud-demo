@@ -54,10 +54,11 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // dd('hello world');
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
+            'password' => 'required|same:confirm_password',
             'roles' => 'required'
         ]);   
 
@@ -66,8 +67,8 @@ class UserController extends Controller
 
         $user = User::create($input);
         $user->assignRole($request->input('roles'));    
-
-        return redirect()->route('users.index')->with('success','User created successfully');
+        
+        return response()->json(['success'=>'User created successfully']);
     }    
 
     /**
@@ -140,7 +141,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         User::find($id)->delete();
-        return redirect()->route('users.index')->with('success','User deleted successfully');
+        return response()->json(['success'=>'User deleted successfully']);
+        // return redirect()->route('users.index')->with('success','User deleted successfully');
     }
-
 }

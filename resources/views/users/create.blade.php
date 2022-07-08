@@ -107,6 +107,7 @@
                 if(response) {
                     $('.success').text(response.success);
                     $("#ajaxform")[0].reset();
+                    location.reload();
                 }
             },
             error: function(error) {

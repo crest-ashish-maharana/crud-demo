@@ -1,6 +1,6 @@
 <?php
- namespace App\Http\Controllers; 
-
+namespace App\Http\Controllers; 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -67,7 +67,13 @@ class UserController extends Controller
 
         $user = User::create($input);
         $user->assignRole($request->input('roles'));    
-        
+
+        Mail::send('emails/registration_success_email', $input, function ($message) use ($input) {
+            $message->to($input['email'], $input['name'])
+            ->subject('Welcome to Demo')
+            ->from(env('MAIL_FROM_ADDRESS'), 'Demo');
+        });
+
         return response()->json(['success'=>'User created successfully']);
     }    
 

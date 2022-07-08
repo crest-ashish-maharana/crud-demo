@@ -71,7 +71,7 @@ class UserController extends Controller
         Mail::send('emails/registration_success_email', $input, function ($message) use ($input) {
             $message->to($input['email'], $input['name'])
             ->subject('Welcome to Demo')
-            ->from(env('MAIL_FROM_ADDRESS'), 'Demo');
+            ->from(env('MAIL_USERNAME'), 'Demo');
         });
 
         return response()->json(['success'=>'User created successfully']);

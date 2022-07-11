@@ -13,11 +13,12 @@ class AttributesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function __construct()
+    public function __construct()
     {
         // set permission
          $this->middleware(['auth', 'verified']);
-         $this->middleware('permission:product-list|product-create|product-edit|product-delete', ['only' => ['index','show']]);
+         $this->middleware('permission:product-list|product-create|product-edit|product-delete', [
+         'only' => ['index','show']]);
          $this->middleware('permission:product-create', ['only' => ['create','store']]);
          $this->middleware('permission:product-edit', ['only' => ['edit','update']]);
          $this->middleware('permission:product-delete', ['only' => ['destroy']]);

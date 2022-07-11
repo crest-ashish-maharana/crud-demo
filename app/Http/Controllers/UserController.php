@@ -12,7 +12,7 @@ use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
-    function __construct()
+    public function __construct()
     {
          $this->middleware(['auth', 'verified']);
         // set permission

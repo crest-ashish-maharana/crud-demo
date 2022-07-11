@@ -49,18 +49,6 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ],
-        "phpcs": "./vendor/bin/phpcs --standard=phpcs.xml",
-        "phpcbf": "./vendor/bin/phpcbf --standard=phpcs.xml",
-        "install-hooks": [
-            "copy 'pre-commit.sh .git/hooks/pre-commit'",
-            "chmod +x .git/hooks/pre-commit"
-        ],
-        "pre-install-cmd": [
-            "@install-hooks"
-        ],
-        "post-install-cmd": [
-            "@install-hooks"
         ]
     },
     "extra": {

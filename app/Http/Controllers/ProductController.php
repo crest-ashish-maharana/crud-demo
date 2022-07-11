@@ -1,15 +1,16 @@
-<?php 
-namespace App\Http\Controllers;  
+<?php
+namespace App\Http\Controllers;
+
 use App\Http\Requests\ProductPostRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
 use Illuminate\Http\Request;
-    
 
 class ProductController extends Controller
-{ 
+{
+
     /**
      * Display a listing of the resource.
      *
@@ -34,8 +35,8 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('attributeValues')->latest()->paginate(5);
-        return view('products.index',compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
-    }   
+        return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -46,7 +47,7 @@ class ProductController extends Controller
     public function create(Product $product)
     {
         if ($this->authorize('create', $product)) {
-            $attributes = Attribute::all(); 
+            $attributes = Attribute::all();
             return view('products.create', compact('attributes'));
         }
     }
@@ -60,7 +61,7 @@ class ProductController extends Controller
     public function store(ProductPostRequest $request)
     {
         $request->validated();
-        $input = $request->all();  
+        $input = $request->all();
         $input['user_id'] = Auth::id();
         
         if ($image = $request->file('image')) {
@@ -68,7 +69,7 @@ class ProductController extends Controller
             $productImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
             $image->move($destinationPath, $productImage);
             $input['image'] = "$productImage";
-        } 
+        }
         
         $product = Product::create([
             'user_id' => $input['user_id'],
@@ -76,9 +77,9 @@ class ProductController extends Controller
             'detail' => $input['detail'],
             'image' => $input['image'],
             'price' => $input['price'],
-        ]);    
+        ]);
         
-        if(isset($input['colorFields']) && !empty($input['colorFields'])){
+        if (isset($input['colorFields']) && !empty($input['colorFields'])) {
             $colorList = implode(', ', $input['colorFields']);
             AttributeValue::create([
                 'attribute_id' => $input['color'],
@@ -87,7 +88,7 @@ class ProductController extends Controller
             ]);
         }
 
-        if(isset($input['sizeFields']) && !empty($input['sizeFields'])){
+        if (isset($input['sizeFields']) && !empty($input['sizeFields'])) {
             $sizeList = implode(', ', $input['sizeFields']);
             AttributeValue::create([
                 'attribute_id' => $input['size'],
@@ -96,8 +97,8 @@ class ProductController extends Controller
             ]);
         }
 
-        return redirect()->route('products.index')->with('success','Product created successfully.');
-    }   
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+    }
 
     /**
      * Display the specified resource.
@@ -108,7 +109,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return view('products.show',compact('product'));
+        return view('products.show', compact('product'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -121,9 +122,9 @@ class ProductController extends Controller
     {
         $user = Auth::user();
         if ($this->authorize('update', $product) && $user->can('update', $product)) {
-            return view('products.edit',compact('product'));
+            return view('products.edit', compact('product'));
         }
-    }  
+    }
 
     /**
      * Update the specified resource in storage.
@@ -141,22 +142,22 @@ class ProductController extends Controller
             'price'=>'required',
         ]);
 
-        $input = $request->all();  
+        $input = $request->all();
 
         if ($image = $request->file('image')) {
             $destinationPath = 'image/';
             $productImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
             $image->move($destinationPath, $productImage);
             $input['image'] = "$productImage";
-        }else{
+        } else {
             unset($input['image']);
-        }          
+        }
 
         $product->update($input);
    
 
-        return redirect()->route('products.index')->with('success','Product updated successfully');
-    }   
+        return redirect()->route('products.index')->with('success', 'Product updated successfully');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -169,7 +170,6 @@ class ProductController extends Controller
         $ImagePath = 'image/'.$product->image;
         unset($ImagePath);
         $product->delete();
-        return redirect()->route('products.index')->with('success','Product deleted successfully');
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
     }
-  
 }

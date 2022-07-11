@@ -1,5 +1,6 @@
 <?php
-namespace App\Http\Controllers;  
+namespace App\Http\Controllers;
+
 use App\Http\Requests\AttributePostRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attribute;
@@ -31,8 +32,8 @@ class AttributesController extends Controller
     public function index()
     {
         $attributes = Attribute::latest()->paginate(5);
-        return view('attributes.index',compact('attributes'))->with('i', (request()->input('page', 1) - 1) * 5);
-    }   
+        return view('attributes.index', compact('attributes'))->with('i', (request()->input('page', 1) - 1) * 5);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -54,11 +55,11 @@ class AttributesController extends Controller
     public function store(AttributePostRequest $request)
     {
         $request->validated();
-        $input = $request->all(); 
+        $input = $request->all();
 
-        Attribute::create($input);     
-        return redirect()->route('attributes.index')->with('success','Attribute created successfully.');
-    }   
+        Attribute::create($input);
+        return redirect()->route('attributes.index')->with('success', 'Attribute created successfully.');
+    }
 
     /**
      * Display the specified resource.
@@ -69,7 +70,7 @@ class AttributesController extends Controller
 
     public function show(Attribute $attribute)
     {
-        return view('attributes.show',compact('attribute'));
+        return view('attributes.show', compact('attribute'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -80,8 +81,8 @@ class AttributesController extends Controller
 
     public function edit(Attribute $attribute)
     {
-        return view('attributes.edit',compact('attribute'));
-    }  
+        return view('attributes.edit', compact('attribute'));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -96,10 +97,10 @@ class AttributesController extends Controller
         $request->validate([
             'name' => 'required'
         ]);
-        $input = $request->all();          
+        $input = $request->all();
         $attribute->update($input);
-        return redirect()->route('attributes.index')->with('success','Attribute updated successfully');
-    }   
+        return redirect()->route('attributes.index')->with('success', 'Attribute updated successfully');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -110,6 +111,6 @@ class AttributesController extends Controller
     public function destroy(Attribute $attribute)
     {
         $attribute->delete();
-        return redirect()->route('attributes.index')->with('success','Attribute deleted successfully');
+        return redirect()->route('attributes.index')->with('success', 'Attribute deleted successfully');
     }
 }

@@ -10,19 +10,20 @@
     <file>resources</file>
     <file>routes</file>
     <file>tests</file>
-
+    
+    <!-- Files Exclude -->
     <exclude-pattern>bootstrap/cache/*</exclude-pattern>
     <exclude-pattern>bootstrap/autoload.php</exclude-pattern>
     <exclude-pattern>*/migrations/*</exclude-pattern>
     <exclude-pattern>*/seeds/*</exclude-pattern>
     <exclude-pattern>*.blade.php</exclude-pattern>
     <exclude-pattern>*.js</exclude-pattern>
-     <rule ref="Generic.Files.LineLength">
+    
+    <!-- Rules -->
+    <rule ref="Generic.Files.LineLength">
         <properties>
         <property name="lineLimit" value="150"/>
         <property name="absoluteLineLimit" value="0"/>
         </properties>
     </rule>
-    <!-- Show progression -->
-    <!-- <arg value="p"/>-->
 </ruleset>

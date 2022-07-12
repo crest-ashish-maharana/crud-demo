@@ -177,6 +177,12 @@ return [
 
         // For Permissions and roles
         Spatie\Permission\PermissionServiceProvider::class,
+
+        // For Datatables
+        Yajra\DataTables\DataTablesServiceProvider::class,
+
+        // Spam email checker
+        // Martian\SpamMailChecker\SpamMailCheckerServiceProvider::class,
     ],
 
     /*
@@ -231,7 +237,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
 ];

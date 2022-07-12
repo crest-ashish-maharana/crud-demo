@@ -24,84 +24,63 @@
 </div>
 
 @endif
-<form id="ajaxform">
-<span class="success" style="color:green; margin-top:10px; margin-bottom: 10px;"></span>
-  <table class="table table-bordered table-striped" id="table">
-    <thead>
-      <th>No</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Roles</th>
-      <th width="280px">Action</th>
-    </thead>
-    <tbody>
-      @foreach ($data as $key => $user)
-        <tr>
-          <td>{{ ++$i }}</td>
-          <td>{{ $user->name }}</td>
-          <td>{{ $user->email }}</td>
-          <td>
-            @if(!empty($user->getRoleNames()))
-              @foreach($user->getRoleNames() as $v)
-                <label class="badge bg-success">{{ $v }}</label>
-              @endforeach
-            @endif
-          </td>
-      
-          <td>
-            <a class="btn btn-info" href="{{ route('users.show',$user->id) }}">Show</a>
-            @can('user-edit')
-            <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
-            @endcan
-            
-            @can('user-delete')
-              <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}" />
-              <button type="button" data-id="{{ $user->id }}" class="btn btn-danger btn-delete">Delete</button>
-            @endcan
-          </td>
-        </tr>
-      @endforeach
-    </tbody>
 
-  </table>
-</form>
-
-{!! $data->render() !!}
+<div class="container">
+  <div class="row">
+      <div class="col-12 table-responsive">
+          <table class="table table-bordered user_datatable">
+              <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th width="0px">Action</th>
+                  </tr>
+              </thead>
+              <tbody></tbody>
+          </table>
+      </div>
+  </div>
+</div>
 
 <p class="text-center text-primary"><small>by Ashish Maharana</small></p>
-<script>
-  $(document).ready(function() {
-      $('#table').DataTable();
-  } );
+<script type="text/javascript">
 
-  $.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
+  $(function () {
+    var table = $('.user_datatable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('users.index') }}",
+        columns: [
+            {data: 'id', name: 'id'},
+            {data: 'name', name: 'name'},
+            {data: 'email', name: 'email'},
+            {data: 'action', name: 'action', orderable: false, searchable: false}
+        ]
+    });
   });
 
-  $(".btn-delete").click(function(e){
-        if(!confirm("Do you really want to delete this record?")) {
-          return false;
-        }
-        e.preventDefault();   
-        var id = $("#user_id").val();
-        
-        var ajaxTable = $("#table").DataTable();
-        $.ajax({
-            type:'DELETE',
-            url: "users/"+id,
-            data:{"id":id},
-            dataSrc:"",
-            success:function(response){
-                console.log("Response:\n", response);
-                location.reload();
-            },
-            error: function(error) {
-                console.log("Error:\n", error);
-            }
-        });
+  function deleteRecord(e) {
+    var url = "{{ route('users.destroy',':id') }}";
+    url = url.replace(':id',e);
+    if(!confirm("Do you really want to delete this record?")) {
+      return false;
+    }
+    $.ajaxSetup({
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
     });
-
+    $.ajax({
+      type: 'DELETE',
+      url: url,
+      success:function(response){
+          $('.user_datatable').DataTable().ajax.reload();
+      },
+      error: function(error) {
+          console.log("Error:\n", error);
+      }
+    });
+  }
 </script>
 @endsection

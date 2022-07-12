@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use DB;
 use Hash;
 use Illuminate\Support\Arr;
+use DataTables;
 
 class UserController extends Controller
 {
@@ -30,8 +31,22 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $data = User::orderBy('id', 'DESC')->paginate(5);
-        return view('users.index', compact('data'))->with('i', ($request->input('page', 1) - 1) * 5);
+        if ($request->ajax()) {
+            $data = User::get();
+            return Datatables::of($data)->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btnView = '<div class="d-flex">
+                        <a href="' . route('users.show', $row->id) . '" class="btn btn-primary">Show</a> &nbsp;&nbsp; 
+                        <a href="' . route('users.edit', $row->id) . '" class="btn btn-primary">Edit</a> &nbsp;&nbsp;
+                        <a href="javascript:void(0)" class="btn btn-danger btn-delete" onclick="deleteRecord('.$row->id.')">Delete</a>
+                    </div>';
+                    return $btnView;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        $data = User::orderBy('id', 'DESC')->get();
+        return view('users.index');
     }
 
     /**
@@ -57,7 +72,7 @@ class UserController extends Controller
         // dd('hello world');
         $this->validate($request, [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|email_checker|unique:users,email',
             'password' => 'required|same:confirm_password',
             'roles' => 'required'
         ]);

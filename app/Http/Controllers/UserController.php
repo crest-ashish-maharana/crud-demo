@@ -37,7 +37,7 @@ class UserController extends Controller
                 ->addColumn('action', function ($row) {
                     $btnView = '<div class="d-flex">
                         <a href="' . route('users.show', $row->id) . '" class="btn btn-primary">Show</a> &nbsp;&nbsp; 
-                        <a href="' . route('users.edit', $row->id) . '" class="btn btn-primary">Edit</a> &nbsp;&nbsp;
+                        <a href="' . route('users.edit', $row->id) . '" class="btn btn-success">Edit</a> &nbsp;&nbsp;
                         <a href="javascript:void(0)" class="btn btn-danger btn-delete" onclick="deleteRecord('.$row->id.')">Delete</a>
                     </div>';
                     return $btnView;
